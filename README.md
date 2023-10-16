@@ -22,7 +22,9 @@ wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key 
 
 sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 
-sudo apt update
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA
+
+sudo apt-get update
 
 sudo apt install jenkins
 ```
@@ -50,3 +52,4 @@ ssh-keyscan github.com >> ~/.ssh/known_hosts
 ```
 
 ### 2. Creating a job
+1. Copy and paste private key for **jenkins2**
