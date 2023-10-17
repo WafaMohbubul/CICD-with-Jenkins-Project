@@ -1,6 +1,9 @@
-## CI-CD
+## Creating our owm Jenkins 
 
-### 1. Creating our owm Jenkins in AWS
+Diagram
+![](Jenkins_pipeline_steps.png)
+
+#### Launching Instance
 1. Create own instance
 2. Select Ubuntu 20.04 lts AMI
 3. Select your own VPC 
@@ -16,6 +19,7 @@ sudo apt install default-jdk
 
 java -version
 ```
+
 9. Run commands in Order to install Jenkins:
 ```commandline
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
@@ -40,7 +44,7 @@ Copy the password.
 13. Select **Install suggested Plugins** and wait for this to install
 14. After this has finished, skip the username creation and Finish.
 
-Install SSH Agent:
+#### Install SSH Agent:
 15. Go to **Manage Jenkins**
 16. Click Plugins 
 17. Click **Available plugins**
@@ -50,6 +54,62 @@ Install SSH Agent:
 sudo su - jenkins
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 ```
+#### Install Office365 Connector Agent:
 
-### 2. Creating a job
-1. Copy and paste private key for **jenkins2**
+### 2. Creating a first job
+1. New item
+2. Name this `wafa-CI`
+
+```commandline
+cd app/app
+npm install
+npm test
+```
+
+   
+### 2. Creating a second job
+1. Name this `wafa-merge`
+
+
+### 2. Creating a third job
+1. Name this `wafa-cd`
+2. launch a new instance
+
+```commandline
+rsync -avz -e "ssh -o StrictHostKeyChecking=no" app ubuntu@34.244.143.41:/home/ubuntu
+ssh -o "StrictHostKeyChecking=no" ubuntu@34.244.143.41 <<EOF
+
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
+    sudo apt-get install nginx -y
+    sudo systemctl restart nginx
+    sudo systemctl enable nginx
+EOF
+```
+NOTE: THE IP ADDRESS OF THE NEW INSTANCE CREATED
+
+
+### 2. Creating a 4th job
+1. Name this `wafa-app`
+```commandline
+ssh -A -o "StrictHostKeyChecking=no" ubuntu@34.244.143.41 <<EOF
+
+# install Node.js and npm
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt install nodejs -y
+
+# install pm2 globally
+sudo npm install pm2 -g
+
+cd app/app
+
+# install project dependencies
+npm install
+
+# start the node.js application
+pm2 start  app.js
+pm2 restart app.js
+```
+
+
+
