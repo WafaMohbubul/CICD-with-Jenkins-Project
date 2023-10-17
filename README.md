@@ -166,5 +166,6 @@ pm2 restart app.js
 
 ### To check it works
 1. Push something to GitHub
-2. All the jobs should be triggered
+2. All the jobs should be triggered. And should have all passed as seen below
 
+![](pipeline.png)
